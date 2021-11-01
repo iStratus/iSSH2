@@ -98,7 +98,7 @@ usageHelp () {
   echo "      --no-bitcode          don't embed bitcode"
   echo "  -h, --help                display this help and exit"
   echo
-  echo "Valid platforms: iphoneos, macosx, appletvos, watchos"
+  echo "Valid platforms: iphoneos, iphonesimulator, macosx, appletvos, watchos"
   echo
   echo "Xcodeproj and target or platform and min version must be set."
   echo
@@ -193,7 +193,7 @@ if [[ -z "$MIN_VERSION" ]]; then
   exit 1
 fi
 
-if [[  "$SDK_PLATFORM" == "macosx" ]] || [[ "$SDK_PLATFORM" == "iphoneos" ]] || [[ "$SDK_PLATFORM" == "appletvos" ]] || [[ "$SDK_PLATFORM" == "watchos" ]]; then
+if [[  "$SDK_PLATFORM" == "macosx" ]] || [[ "$SDK_PLATFORM" == "iphoneos" ]] || [[ "$SDK_PLATFORM" == "iphonesimulator" ]] || [[ "$SDK_PLATFORM" == "appletvos" ]] || [[ "$SDK_PLATFORM" == "watchos" ]]; then
   if [[ -z "$ARCHS" ]]; then
     ARCHS="$TARGET_ARCHS"
 
@@ -220,11 +220,13 @@ if [[  "$SDK_PLATFORM" == "macosx" ]] || [[ "$SDK_PLATFORM" == "iphoneos" ]] || 
           ARCHS="$ARCHS arm64"
         fi
       fi
+    elif [[ "$SDK_PLATFORM" == "iphonesimulator" ]]; then
+      if [[ -z "$ARCHS" ]]; then
+        ARCHS="x86_64"
 
-      ARCHS="$ARCHS x86_64"
-
-      if [[ $(version "$MIN_VERSION") < $(version "10.0") ]]; then
-        ARCHS="$ARCHS i386"
+        if [[ $(version "$MIN_VERSION") < $(version "10.0") ]]; then
+          ARCHS="$ARCHS i386"
+        fi
       fi
     elif [[ "$SDK_PLATFORM" == "appletvos" ]]; then
       ARCHS="$ARCHS arm64 x86_64"
